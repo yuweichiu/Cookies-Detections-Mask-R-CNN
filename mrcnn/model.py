@@ -1249,7 +1249,6 @@ def load_image_gt(dataset, config, image_id, augment=False, augmentation=None,
         mask_shape = mask.shape
         # Make augmenters deterministic to apply similarly to images and masks
         det = augmentation.to_deterministic()
-        # det = augmenter.to_deterministic()
         image = det.augment_image(image)
         # Change mask to np.uint8 because imgaug doesn't support np.bool
         mask = det.augment_image(mask.astype(np.uint8),

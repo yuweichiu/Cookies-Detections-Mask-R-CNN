@@ -56,7 +56,7 @@ DEFAULT_LOGS_DIR = os.path.join(ROOT_DIR, "logs")
 ############################################################
 #  Session Setting
 ############################################################
-# if you face the error about convolution layer,
+# If you face the error about convolution layer,
 # use this block to enable the memory usage of GPU growth.
 from keras.backend.tensorflow_backend import set_session
 import tensorflow as tf
@@ -80,8 +80,7 @@ class CookiesConfig(Config):
     # Give the configuration a recognizable name
     NAME = "cookies"
 
-    # We use a GPU with 12GB memory, which can fit two images.
-    # Adjust down if you use a smaller GPU.
+    # I use a NVIDIA RTX2060 6GB , which can fit 1 images with ResNet-50
     IMAGES_PER_GPU = 1
 
     # Number of classes (including background)
@@ -301,7 +300,7 @@ def draw_on_image(image, r, colors, bbox=True, mask=True, score=True):
     return new_img
 
 
-def detect(model, weights_path, image_path=None, video_path=None, colors_each_class=None):
+def detect(model, weights_path, image_path=None, video_path=None, colors_each_class=None, show=True):
     assert image_path or video_path
 
     # Image or video?
@@ -324,10 +323,11 @@ def detect(model, weights_path, image_path=None, video_path=None, colors_each_cl
         out_dir = weights_path.split(os.path.basename(weights_path))[0]
         file_name = os.path.basename(image_path)
         cv2.imwrite(os.path.join(out_dir, 'detect_' + file_name), new_img, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
-        cv2.imshow('', new_img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
         print("Saved to ", file_name)
+        if show:
+            cv2.imshow('', new_img)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
         return new_img
     elif video_path:
         # Video capture
@@ -465,8 +465,7 @@ if __name__ == '__main__':
                 iaa.Rot90(3, True),
                 iaa.Rot90(2, True),
                 iaa.ChannelShuffle(0.5),
-                iaa.PerspectiveTransform(0.075),
-                iaa.CropToFixedSize()
+                iaa.PerspectiveTransform(0.075)
             ])
         else:
             augmentation = False
