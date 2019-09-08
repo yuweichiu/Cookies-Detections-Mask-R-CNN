@@ -86,6 +86,11 @@ class CookiesConfig(Config):
     # Number of classes (including background)
     NUM_CLASSES = 1 + 2  # Background + lays + doritos
 
+    # Backbone network of Mask R-CNN:
+    # This option can change between ResNet-101 and ResNet-50
+    # up to the capacity of your GPU.
+    BACKBONE = "resnet50"
+
     # Number of training steps per epoch
     STEPS_PER_EPOCH = 115
 
@@ -240,7 +245,7 @@ def train(model, epoch, augmentation=False):
 
 def draw_on_image(image, r, colors, bbox=True, mask=True, score=True):
     """
-    Draw the bbox, mask,
+    Draw the bbox, mask on image with OpenCV.
     :param image: opencv-based BGR image matrix.
     :param r: detection result.
     :param colors: the color list for each object.
